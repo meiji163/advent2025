@@ -7,9 +7,12 @@
         sgn (if (= \L dir) -1 1)]
     (* sgn (parse-long num))))
 
+(defn parse-lines [s]
+  (map parse (str/split-lines s)))
+
 (defn solve1 [nums]
   (count (filter (fn [n] (= 0 (mod (+ n 50) 100)))
-           (reductions + nums))))
+                 (reductions + nums))))
 
 (defn red2 [acc n]
   (let [[count pos] acc
@@ -25,15 +28,14 @@
 
 (defn -main []
   (let [input (slurp "input/day1.txt")
-        nums (map parse (str/split-lines input))]
+        nums (parse-lines input)]
     (solve2 nums)))
 
 (-main)
 ;; => 6616
 
 (comment
-  (def test-input
-    "L68
+  (def test-input (parse-lines "L68
 L30
 R48
 L5
@@ -42,6 +44,7 @@ L55
 L1
 L99
 R14
-L82")
-
+L82"))
+  (solve1 test-input)
+  (solve2 test-input)
   )

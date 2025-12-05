@@ -31,7 +31,6 @@
 (defn least-repeatn [range n]
   (let [[lo hi] range
         lo-digs (to-digits lo)
-        hi-digs (to-digits hi)
         len (count digs)
         q (quot len n)
         r (rem len n)
