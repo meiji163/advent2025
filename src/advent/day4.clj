@@ -58,7 +58,7 @@
             grid
             xmap)))
 
-(defn helper [grid coords count]
+(defn helper [grid coords n]
   (let [[h w] (grid-dims grid)
         
         to-rem (vec (filter (partial valid1? grid) coords))
@@ -66,13 +66,24 @@
         to-rem-nbrs (->> to-rem
                          (map #(neighbors grid %))
                          (apply concat)
+                         distinct
                          (filter #(= \@ (gget grid %))))
 
         next-grid (grid-update grid to-rem)]
     (if (empty? to-rem-nbrs)
-      count
+      n 
 
-      (recur next-grid to-rem-nbrs (inc count)))))
+      (recur next-grid
+             to-rem-nbrs
+             (+ n (count to-rem))))))
+
+(defn solve2 [grid]
+  (let [[h w] (grid-dims grid)
+        coords (for [i (range 0 h)
+                     j (range 0 w)
+                     :when (valid1? grid [i j])]
+                 [i j])]
+    (helper grid coords 0)))
 
 (comment
   (def test-input "..@@.@@@@.
@@ -88,19 +99,18 @@
   
   (def test-grid (parse-grid test-input))
   (solve1 test-grid)
-  (grid-update test-grid [[0 2] [0 7]])
   ;; => 13
 
-  (let [[h w] (grid-dims test-grid)
-        coords (for [i (range 0 h)
-                     j (range 0 w)
-                     :when (valid1? test-grid [i j])]
-                 [i j])]
-    (helper test-grid coords 0))
-  )
+  (solve2 test-grid)
+  ;; => 43
+
+  (grid-update test-grid [[0 2] [0 7]]))
+
 
 (defn -main []
   (let [grid (parse-grid (slurp "input/day4.txt"))]
-    (solve1 grid))
-  ;; => 1397
-  )
+    (solve1 grid)
+    ;; => 1397
+    (solve2 grid)
+    ;; => 8758
+    ))
