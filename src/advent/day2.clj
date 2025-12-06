@@ -1,28 +1,18 @@
 (ns advent.day2
   (:require [clojure.string :as str])
-  (:require [clojure.math.numeric-tower :as math]))
-
-(defn parse-range [s]
-  (map parse-long (str/split (str/trim s) #"-")))
+  (:require [clojure.math.numeric-tower :as math])
+  (:require [advent.utils :as util]))
 
 (defn parse [s]
-  (map parse-range (str/split s #",")))
-
-(defn to-digits [n]
-  (->> n
-       str
-       (map (fn [c] (Character/digit c 10)))))
-
-(defn from-digits [ds]
-  (reduce (fn [acc d] (+ (* 10 acc) d)) ds))
+  (map util/parse-range (str/split s #",")))
 
 (defn least-repeat2 [x]
-  (let [digs (to-digits x)
+  (let [digs (util/to-digits x)
         len (count digs)
         half (if (odd? len)
                     (/ (dec len) 2)
                     (/ len 2))]
-    (from-digits
+    (util/from-digits
      (if (odd? len)
        (cons 1 (repeat half 0))
        (take half digs)))
@@ -30,11 +20,11 @@
 
 (defn least-repeatn [range n]
   (let [[lo hi] range
-        lo-digs (to-digits lo)
+        lo-digs (util/to-digits lo)
         len (count digs)
         q (quot len n)
         r (rem len n)
-        pattern (from-digits
+        pattern (util/from-digits
                  (if (zero? r)
                    (take n digs)
                    (cons 1 (repeat (dec n) 0))))
@@ -61,7 +51,7 @@
     (->> ids flatten distinct)))
 
 (defn num-digits [n]
-  (count (to-digits n)))
+  (count (util/to-digits n)))
 
 (defn double [n]
   (+ (* n (math/expt 10 (num-digits n)))

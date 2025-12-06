@@ -29,7 +29,7 @@
 (defn gget [grid xy]
   ((grid (first xy)) (second xy)))
 
-(defn valid1? [grid xy]
+(defn valid? [grid xy]
   (let [[x y] xy]
     (and (= \@ (gget grid xy))
          (> 4 (count
@@ -40,7 +40,7 @@
 (defn solve1 [grid]
   (let [[h w] (grid-dims grid)]
     (count
-     (filter (partial valid1? grid)
+     (filter (partial valid? grid)
              (for [i (range 0 h)
                    j (range 0 w)]
                [i j])))
@@ -61,7 +61,7 @@
 (defn helper [grid coords n]
   (let [[h w] (grid-dims grid)
         
-        to-rem (vec (filter (partial valid1? grid) coords))
+        to-rem (vec (filter (partial valid? grid) coords))
 
         to-rem-nbrs (->> to-rem
                          (map #(neighbors grid %))
@@ -81,7 +81,7 @@
   (let [[h w] (grid-dims grid)
         coords (for [i (range 0 h)
                      j (range 0 w)
-                     :when (valid1? grid [i j])]
+                     :when (valid? grid [i j])]
                  [i j])]
     (helper grid coords 0)))
 
