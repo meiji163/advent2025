@@ -19,7 +19,7 @@
   6 98  215 314
 *   +   *   +" 
     )
-  (let [[nums ops] (parse test-input)]
+  (let [[nums ops] (parse1 test-input)]
     (solve nums ops))
   ;; => 4277556
 
@@ -36,7 +36,7 @@
             clojure.core/+))
         (str/split l #"\s+"))))
 
-(defn parse [s]
+(defn parse1 [s]
   (let [lines (str/split-lines s)
         l1 (take (dec (count lines)) lines)
         l2 (last lines)
@@ -59,13 +59,10 @@
     
         nums (for [n (range 0 (dec (count idxs)))]
                (parse-num-col l1
-                              (idxs n)              ;start index
-                              (dec (idxs (inc n)))) ;end index
+                              (idxs n)              ;start
+                              (dec (idxs (inc n)))) ;end
                )]
     [(vec nums) (vec ops)]))
-
-(comment
- )
 
 (defn parse-num-col [ll start end]
   (for [i (range start end)]
@@ -87,7 +84,7 @@
 
 (defn -main []
   (let [input (slurp "input/day6.txt") 
-        [nums1 ops1] (parse input)
+        [nums1 ops1] (parse1 input)
         [nums2 ops2] (parse2 input)
         ]
     (solve nums1 ops1)
