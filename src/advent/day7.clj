@@ -22,16 +22,18 @@
                        (vec))]
     [new-beams splits]))
 
-(defn step2 [paths row]
+(defn step2! [paths row]
   (let [splitters (util/indexes= \^ row)
-        len (count paths)
-        new-paths (make-array Integer/TYPE len)
-
-        f (fn [n]
-            )
-        ])
-  )
-
+        len (count paths)]
+    (doseq [i (range 0 len)]
+      (when (.contains splitters i)
+        (do (aset paths (dec i)
+                  (+ (aget paths (dec i)) (aget paths i)))
+            (aset paths (inc i)
+                  (+ (aget paths (inc i)) (aget paths i))))))
+    (doseq [i splitters]
+      (aset paths i 0))
+    ))
 
 (defn solve1 [rows start]
   (let [f (fn [[beams n] row]
@@ -40,9 +42,21 @@
     (second
      (reduce f [[start] 0] rows))))
 
+(defn solve2 [rows start]
+  (let [len (count (first rows))
+        paths (make-array Long/TYPE len)
+        _ (aset paths start 1)]
+    (doseq [row rows]
+      (println (vec paths))
+      (step2! paths row))
+    (reduce + paths)))
+
 (defn -main []
   (let [[rows start] (parse (slurp "input/day7.txt"))]
-    (solve1 rows start)))
+    (solve1 rows start)
+    (solve2 rows start))
+  ;; => 15650261281478
+  )
 
 (comment
   (def test-input ".......S.......
@@ -63,9 +77,8 @@
 ...............")
 
   (let [[rows start] (parse test-input)]
-    rows
     (solve1 rows start)
+    (solve2 rows start)
     )
 
-  (step [5 6 8] (vec "......^.^......"))
-  )
+  (step [5 6 8] (vec "......^.^......")))
